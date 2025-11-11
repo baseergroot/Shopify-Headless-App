@@ -12,7 +12,7 @@ const CheckoutButton = ({variantId}: any) => {
         onClick={() => {
             handleCheckout(variantId);
         }}>
-            Add to Cart
+            Buy Now
         </Button>
     )
 }

@@ -26,6 +26,8 @@ const handleCheckout = async (variantId: any) => {
         throw new Error("Failed to create checkout")
     }
 
+    console.log("Checkout URL:", res.data.cartCreate.cart.checkoutUrl)
+
     redirect(res.data.cartCreate.cart.checkoutUrl) 
 }
 
