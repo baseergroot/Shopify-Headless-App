@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const url = process.env.SHOPIFY_STORE_URL;
 const token = process.env.SHOPIFY_ACCESS_TOKEN;
 
@@ -10,110 +11,148 @@ if (!url || !token) {
 }
 
 const storeFront = async (query: string, variables = {}) => {
-  const response = await axios.post(
-    process.env.SHOPIFY_STORE_URL!,
-    {
-      query,
-      variables,
-    },
-    {
-      headers: {
-        "X-Shopify-Storefront-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN!,
-      },
-    }
-  );
+  const response = await axios.post(url,
+    { query, variables },
+    { headers: { "X-Shopify-Storefront-Access-Token": token } })
 
-  return response.data;
-};
+  return response.data
+}
 
-// const gql = String.raw
-
-const gqlQuery = `
-query Products {
-products(first: 6) {
-edges {
-node {
-title
-description
-
-  images(first: 1) {
+const getProductsQuery = ` query getProducts {
+  products(first: 5) {
     edges {
       node {
-        originalSrc
-      }
-    }
-  }
-
-  priceRange {
-    minVariantPrice {
-      amount
-      currencyCode
-    }
-  }
-  handle
-    
-}
-
-}
-}
-}
-`;
-
-// const data = await storeFront(gqlQuery)
-
-const ProductByHandleQuery = `
-query ProductByHandle($handle: String!) {
-  productByHandle(handle: $handle) {
-    id
-    title
-    description
-    images(first: 1) {
-      edges {
-        node {
-          originalSrc
+        title
+        description
+        handle
+        priceRange {
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
         }
-      }
-    }
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    handle
-
-    variants(first: 1) {
-        edges {
-          node {
-            id
-            title
-            priceV2 {
-              amount
-              currencyCode
+        media(first: 1) {
+          edges {
+            node {
+              ... on MediaImage {
+                image {
+                  url
+                }
+              }
             }
           }
         }
       }
-    
+    }
   }
-}
-`;
+} `
+
+const getProductByHandleQuery = ` query getProductByHandle($handle: String!) {
+  product(handle: $handle) {
+    id
+    title
+    description
+    variants(first: 10) {
+      edges {
+        node {
+          id
+          title
+          price {
+            amount
+            currencyCode
+          }
+          availableForSale
+        }
+      }
+    }
+    images(first: 5) {
+      edges {
+        node {
+          url
+          altText
+        }
+      }
+    }
+    # Add any other fields you need
+  }
+} `
 
 
-const CheckoutCreateMutation = `
-mutation createCart {
-  cartCreate {
+// Mutation to create a cart with one item
+
+// Variables: merchandiseId (variant ID), quantity (Int)
+const createCartMutation = ` 
+mutation CreateCart($merchandiseId: ID!, $quantity: Int!) {
+  cartCreate(
+    input: {
+      lines: [{ merchandiseId: $merchandiseId, quantity: $quantity }]
+    }
+  ) {
     cart {
-      id
-      checkoutUrl
+      id              # <--- SAVE THIS ID!
+      checkoutUrl     # You can link to this immediately
+      lines(first: 100) {
+        edges {
+          node {
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                title
+              }
+            }
+          }
+        }
+      }
+      cost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+      }
     }
     userErrors {
-      field
       message
     }
   }
-}
-`;
+} `
+
+// add to cart mutation
+
+// Variables: cartId (ID), merchandiseId (variant ID), quantity (Int)
+const addToCartMutation = ` # MUTATION 2: Use this when cartId IS FOUND in local storage.
+mutation AddToCart($cartId: ID!, $merchandiseId: ID!, $quantity: Int!) {
+  cartLinesAdd(
+    cartId: $cartId                 # <--- The ID you saved
+    lines: [{ merchandiseId: $merchandiseId, quantity: $quantity }]
+  ) {
+    cart {
+      id
+      checkoutUrl
+      # After adding the line, you query the full updated cart back:
+      lines(first: 100) {
+        edges {
+          node {
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                title
+              }
+            }
+          }
+        }
+      }
+      cost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+      }
+    }
+    userErrors {
+      message
+    }
+  }
+} `
 
 
-export { gqlQuery, storeFront, ProductByHandleQuery, CheckoutCreateMutation };
+export {storeFront, getProductsQuery, getProductByHandleQuery};
