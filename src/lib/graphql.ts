@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const url = process.env.SHOPIFY_STORE_URL;
 const token = process.env.SHOPIFY_ACCESS_TOKEN;
 
@@ -11,11 +10,17 @@ if (!url || !token) {
 }
 
 const storeFront = async (query: string, variables = {}) => {
-  const response = await axios.post(url,
-    { query, variables },
-    { headers: { "X-Shopify-Storefront-Access-Token": token } })
+  try {
+    const response = await axios.post(url,
+      { query, variables },
+      { headers: { "X-Shopify-Storefront-Access-Token": token } })
 
-  return response.data
+    return response.data
+  } catch (error) {
+    console.error("Error in storeFront function:", error);
+    throw error;
+  }
+
 }
 
 const getProductsQuery = ` query getProducts {
@@ -155,4 +160,47 @@ mutation AddToCart($cartId: ID!, $merchandiseId: ID!, $quantity: Int!) {
 } `
 
 
-export {storeFront, getProductsQuery, getProductByHandleQuery};
+// Query to get cart details
+
+// variables: cartId (ID)
+const getCartQuery = ` # QUERY: Use this when the user clicks 'View Cart' or loads the Cart page.
+query GetCart($cartId: ID!) {
+  cart(id: $cartId) {
+    id
+    checkoutUrl
+    # You are querying the 'lines' array—this is all the items!
+    lines(first: 100) {
+      edges {
+        node {
+          id # The Line Item ID (used for updates/removals)
+          quantity
+          # The specific product information for the user to see
+          merchandise {
+            ... on ProductVariant {
+              id
+              title
+              image {
+                url
+                altText
+              }
+              price {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
+      }
+    }
+    # You are querying the total cost for display
+    cost {
+      totalAmount {
+        amount
+        currencyCode
+      }
+    }
+  }
+} `
+
+
+export { storeFront, getProductsQuery, getProductByHandleQuery, createCartMutation, addToCartMutation, getCartQuery };

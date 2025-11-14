@@ -16,7 +16,7 @@ export default async function Page({params}: {params: {product: string}}) {
     const rawProduct = response.data.product
 
     // log the raw product
-    console.log({rawProduct})
+    // console.log({rawProduct})
 
 
     const product: Product = {
@@ -43,7 +43,7 @@ export default async function Page({params}: {params: {product: string}}) {
 
     }
     
-    console.log({product})
+    // console.log({product})
 
     return (
         <main>

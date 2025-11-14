@@ -64,7 +64,7 @@ function classNames(...classes: any) {
 
 export default function ProductComponents({ product }: { product: Product }) {
 
-    console.log({ Image: product.images[0] })
+    // console.log({ Image: product.images[0] })
     return (
         <div className="bg-white">
             <div className="pt-6">
@@ -199,7 +199,9 @@ export default function ProductComponents({ product }: { product: Product }) {
                                 </fieldset>
                             </div> */}
 
-                            <AddToCartButton productId={product.variants[0]?.id} />
+                            {product.variants?.[0]?.id ? (
+                                <AddToCartButton productId={product.variants[0].id} />
+                            ) : null}
                         </form>
                     </div>
 
