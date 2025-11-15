@@ -12,7 +12,7 @@ export default function CartComponent({ cartResponse }: { cartResponse: CartQuer
     }
 
     return (
-        <div className="p-4 w-80 max-h-[600px] overflow-y-auto bg-white shadow-2xl rounded-lg border">
+        <div className="p-4 w-80 max-h-[600px] overflow-y-auto bg-white shadow-2xl rounded-lg border mr-5">
             
             <h3 className="text-lg font-bold mb-3 border-b pb-2">Your Cart ({items.length})</h3>
 
@@ -32,7 +32,7 @@ export default function CartComponent({ cartResponse }: { cartResponse: CartQuer
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold truncate">{item.node.merchandise.title}</p>
                             <div className="flex justify-between text-xs text-gray-500">
-                                <span>Qty: **{item.node.quantity}**</span>
+                                <span>Qty: {item.node.quantity}</span>
                                 <span className="font-medium text-gray-700">
                                     {item.node.merchandise.price.amount} {item.node.merchandise.price.currencyCode}
                                 </span>

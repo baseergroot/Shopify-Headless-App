@@ -1,7 +1,5 @@
-import  PopoverCart  from "@/components/cartPopover";
 import Home from "@/components/home";
 import Products from "@/components/productsCom";
-import { Button } from "@/components/ui/button";
 import { getProductsQuery, storeFront } from "@/lib/graphql";
 import { Product } from "@/lib/types";
 
@@ -27,7 +25,7 @@ const Page = async () => {
       <section className="flex flex-col w-full gap-5">
         <Products products={products} />
       </section>
-      <PopoverCart />
+      
     </main>
     </>
     
