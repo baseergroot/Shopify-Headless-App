@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import PopoverCart from "@/components/cartPopover";
 
-
 export const metadata: Metadata = {
-  title: "Baseer Tech Store",
-  description: "Baseer Tech Store for easy shopping",
+  title: "Store | Shop Premium Products",
+  description: "Discover our curated collection of quality products",
 };
 
 export default function RootLayout({
@@ -15,29 +14,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-      >
-
-        {/* Navigation */}
-        <header className="relative inset-x-0 top-0 z-50">
-        <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
-          <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <img
-                alt=""
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto"
-              />
+      <body className="bg-white text-gray-900">
+        <header className="sticky top-0 z-50 border-b border-gray-100 bg-white">
+          <nav className="flex items-center justify-between px-6 lg:px-8 py-4 max-w-7xl mx-auto">
+            <a href="/" className="font-bold text-xl text-gray-900 hover:text-gray-700 transition-colors">
+              Store
             </a>
+            <PopoverCart />
+          </nav>
+        </header>
+        <main className="min-h-screen">
+          {children}
+        </main>
+        <footer className="border-t border-gray-100 bg-gray-50 py-8 mt-16">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center text-gray-600 text-sm">
+            <p>&copy; 2025 Store. All rights reserved.</p>
           </div>
-          
-          <PopoverCart />
-
-        </nav>
-        
-      </header>
-        {children}
+        </footer>
       </body>
     </html>
   );

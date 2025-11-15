@@ -1,39 +1,43 @@
 import { Product } from "@/lib/types";
 
-
 export default function Products({ products }: any) {
   return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customers choice</h2>
+    <section className="bg-white py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="flex justify-between items-end mb-12">
+          <div>
+            <p className="text-sm text-gray-600 font-medium mb-2">New Arrivals</p>
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">Featured Products</h2>
+          </div>
+        </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {products.map((product: Product) => (
-            <div key={product.handle} className="group relative">
-              <img
-                alt="product image"
-                src={product.images[0]}
-                className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
-              />
-              <div className="mt-4 flex justify-between">
-                <div>
-                  <h3 className="text-sm text-gray-700">
-                    <a href={product.handle}>
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {product.name}
-                    </a>
-                  </h3>
-                  {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
-                </div>
-                <div className="flex gap-1">
-                  <p className="text-sm font-medium text-gray-900">{product.price?.amount}</p>
-                  <p className="text-sm font-medium text-gray-900">{product.price?.currencyCode}</p>
-                </div>
+            <a
+              key={product.handle}
+              href={`/${product.handle}`}
+              className="group"
+            >
+              <div className="relative overflow-hidden bg-gray-100 rounded-xl mb-4 aspect-square">
+                <img
+                  alt={product.name}
+                  src={product.images[0]}
+                  className="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-300"
+                />
               </div>
-            </div>
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h3 className="text-base font-semibold text-gray-900 group-hover:text-gray-700 transition-colors">
+                    {product.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-600">{product.price?.currencyCode}</p>
+                </div>
+                <p className="text-base font-bold text-gray-900">{product.price?.amount}</p>
+              </div>
+            </a>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
