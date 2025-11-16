@@ -202,5 +202,48 @@ query GetCart($cartId: ID!) {
   }
 } `
 
+// mutate cart
 
-export { storeFront, getProductsQuery, getProductByHandleQuery, createCartMutation, addToCartMutation, getCartQuery };
+// variables {cartId, lineId, quantity}
+const updateCartQuery = ` mutation UpdateCartQuantity($cartId: ID!, $lineId: ID!, $quantity: Int!) {
+  cartLinesUpdate(
+    cartId: $cartId
+    lines: [
+      {
+        id: $lineId        # <-- The unique ID of the specific item/line
+        quantity: $quantity # <-- The new desired quantity (e.g., 3)
+      }
+    ]
+  ) {
+    cart {
+      # After the update, always query the full, fresh cart data back
+      id
+      checkoutUrl
+      cost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+      }
+      lines(first: 100) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                title
+              }
+            }
+          }
+        }
+      }
+    }
+    userErrors {
+      message
+      field
+    }
+  }
+} `
+
+export { storeFront, getProductsQuery, getProductByHandleQuery, createCartMutation, addToCartMutation, getCartQuery, updateCartQuery };
