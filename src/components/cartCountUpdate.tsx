@@ -22,3 +22,5 @@ const CartCountUpdate = ({lineId, quantity}: {lineId: string, quantity: number})
 }
 
 export default CartCountUpdate
+
+// check what happen if cart reached 0
